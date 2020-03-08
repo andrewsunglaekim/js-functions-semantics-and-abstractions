@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 900px;
+  margin: auto;
+}
+
+.message {
+  margin-top: 60px;
+}
+
+.message__row {
+  display: flex;
+  align-items: center;
+}
+
+.message.message--reversed .message__row {
+  flex-direction: row-reverse;
+}
+
+.message__content {
+  padding: 30px;
+}
+
+.message__user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.message__username {
+  margin-bottom: 20px;
+}
+
+.message__time {
+  margin-bottom: 14px;
+}
+
+.message__image {
+  border-radius: 20px;
+}

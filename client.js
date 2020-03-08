@@ -1,5 +1,3 @@
-console.log('hello!ss');
-
 function fetchData() {
   fetch('http://localhost:4000/messages/')
     .then((res) => {
@@ -7,7 +5,7 @@ function fetchData() {
       return res.json();
     })
     .then((res) => {
-      console.log(res);
+      buildMessages(res)
     })
 }
 
