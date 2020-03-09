@@ -6,7 +6,7 @@ function fetchData() {
     })
     .then((res) => {
       buildMessages(res)
-    })
+    });
 }
 
 fetchData();

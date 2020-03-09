@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  color: #222;
 }
 
 body {
@@ -20,18 +21,26 @@ body {
   flex-direction: row-reverse;
 }
 
+.message__body {
+  font-family: roboto;
+  font-size: 16px;
+  line-height:24px;
+}
+
 .message__content {
   padding: 30px;
 }
 
 .message__user {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   align-items: center;
 }
 
 .message__username {
-  margin-bottom: 20px;
+  margin-top: 20px;
+  font-family: roboto;
+  font-size: 20px;
 }
 
 .message__time {
