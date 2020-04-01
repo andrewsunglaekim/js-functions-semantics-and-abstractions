@@ -11,6 +11,16 @@
 
 ## Admin (3/3)
 
+### Admin - zoom "guidelines"
+Some guidelines might be helpful.
+
+First and foremost, audience participation is welcome and encouraged.
+
+That said, it being a zoom call, look for pauses and defer to other speakers that begin earlier.
+
+Alternatively, another way to get heard or ensure a question is answered is to propose the question in the slack channel #js-functions-abstractions
+
+### Admin - installation
 Install this repository if you'd like to run any of these scenarios locally.
 
 The backend service used in this lesson is an express server, to install and run:
@@ -23,10 +33,13 @@ $ npm install
 $ nodemon server.js
 ```
 
-> Nodemon runs node services that restart the service if it detects changes in the directory. We should be able to see messages in our browser now at `http://localhost:4000/messages/`
+> Nodemon runs node services that restart the service if it detects changes in the directory. We should be able to see json of some messages in our browser now at `http://localhost:4000/messages/`
+
 
 ## Framing - Abstraction (5/8)
-As developers we're told from the beginning to keep things DRY. It's something that constantly nags at us almost to a detriment. When we start weighing our decisions against one another, that's when real engineering starts. Abstraction is at the crux of all of that.
+As developers we're told from the beginning to keep things DRY. It's something that constantly nags at us almost to a detriment.
+
+When we start weighing our decisions against one another, that's when real engineering starts. Abstraction is at the crux of all of that.
 
 Wikipedia:
 
@@ -35,7 +48,7 @@ Wikipedia:
 In this lesson, we'll introspect on this repository at various branches.
 
 ### A contrived thought experiment
-A company has tasked us with building a world class web page. It needs to print in the console hello:
+Imagine a world where logging hello is a feature. A company says I need this feature:
 
 ```js
 console.log('hello');
@@ -48,9 +61,9 @@ console.log('hello');
 console.log('hello');
 ```
 
-The company then says, "Seeing it twice makes me twice as excited about it. I'm going to have to see that 3 times."
+The company then says, "This isn't a feature for ants. I'm going to have to see that feature at least 3 times."
 
-We stop. We've seen this before. We think we know where this is going. We think ahead.
+We stop. We've seen this before. We think ahead. Boom:
 
 ```js
 const numberOfTimesToPrintHello = 3
@@ -59,7 +72,9 @@ for (let i = 0; i < numberOfTimesToPrintHello; i++) {
 }
 ```
 
-So often, we solution faster than we domain.
+We do it this way because we can just change the number to whatever we need in the future.
+
+**So often, we solution faster than we domain.**
 
 Maybe we should have started with some questions first.
 
@@ -85,12 +100,89 @@ This thought experiment is a metaphor for engineering. We're constantly weighing
 
 ## We do - 3 minute Code Review (3/11)
 
-Look at the implementation of rendering these messages.
-
 Checkout to the `first-exercise` branch.
 
 ```
 $ git checkout first-exercise
+$ open index.html
+// alternatively, open the index.html in the browser in a different way
+```
+
+Spend the next 3 minutes familiarizing with the dataset, reviewing the html and javascript, viewing the page in the browser.
+
+## We do - Code smells - Maybe not (11/14)
+
+Code smell always has a negative connotation. What we're looking for are **potential** ways to improve upon `client.js`:
+
+```js
+function init() {
+  fetch('http://localhost:4000/messages/')
+    .then((res) => {
+      return res.json();
+    })
+    .then((res) => {
+      // destructures messages from response
+      const { messages } = res;
+      messages.forEach((message) => {
+        // creates element to append
+        const el = document.createElement('div');
+
+        // intializes time variables
+        const date = luxon.DateTime.fromISO(message.timestamp);
+        const amPM = date.hour > 12 ? 'pm' :'am';
+        const hour = date.hour > 12 ? date.hour % 12 : date.hour;
+
+        // adds dom content
+        el.className = `message ${message.focused ? 'message--reversed' : ''}`
+        el.innerHTML = `
+          <div class="message__row">
+            <div class="message__content">
+              <div class="message__time">
+                ${`${date.day} ${date.monthShort} ${hour}:${date.minute} ${amPM}`}
+              </div>
+              <div class="message__body">
+                ${message.body}
+              </div>
+            </div>
+            <div class='message__user'>
+              <div class='message__username'>
+                ${message.username}
+              </div>
+              <img
+                class="message__image"
+                src="${message.image}">
+            </div>
+          </div>
+        `
+
+        // appends to list
+        const messagesEl = document.querySelector('.messages')
+        messagesEl.appendChild(el)
+      });
+    });
+}
+
+init();
+```
+
+There's ultimately nothing to incorrect about this code. It's a bit procedural but it gets the job done well enough in just under 50 lines of code.. with comments!
+
+If we know this "feature" will be exactly just rendering 4 messages, this code may be just fine.
+
+However, that's usually not the case in development. Scope creep and changing requirements are norms of the industry.
+
+We want to write code with abstractions to help us reuse functionality.
+
+Let's take a look at a different solution with some abstractions added to it.
+
+## We do - 3 minute Code Review (3/11)
+
+Look at the implementation of rendering these messages.
+
+Checkout to the `second-exercise` branch.
+
+```
+$ git checkout second-exercise
 $ open index.html
 // alternatively, open the index.html in the browser in a different way
 ```
@@ -118,9 +210,9 @@ Spend the next 5 minutes talking about the function our group was assigned. Whil
 
 ![1000 words](images/1000words.jpg)
 
-By definition, these things are very simple and intuitive:
-
 ### Inputs, Outputs, Side Effects
+
+By definition, these things are very simple and intuitive:
 
 ```js
 function add(num1, num2) {
