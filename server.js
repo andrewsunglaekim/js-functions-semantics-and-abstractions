@@ -7,7 +7,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/messages/', (req, res) => {
-  console.log('getting request');
   res.json({
     messages: [
       {
