@@ -21,6 +21,4 @@ function buildMessage(message) {
       </div>
     </div>
   `
-  const messagesEl = document.querySelector('.messages')
-  messagesEl.appendChild(el)
 }

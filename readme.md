@@ -409,4 +409,4 @@ These definitions pertain to software modules, but we as developers can translat
 
 The goal as developers is to have low coupling and high cohesion. `fetchData` couples fetching with building messages. `parseTime`, alternatively, has high cohesion because it's only doing time parsing stuff and doesn't have any unnecessary side effects.
 
-## One more look
+## One more look at the chat app
