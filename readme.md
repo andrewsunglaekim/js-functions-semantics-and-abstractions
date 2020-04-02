@@ -6,7 +6,8 @@
 - Identify the side effects of a function
 - Define Functional Programming
 - Write semantic javascript variable names
-- Identify potential anti patterns in code structure
+- Define coupling with respect to software development
+- Define cohesion with respect to software development
 - Identify the subjectivity of engineering
 
 ## Admin (3/3)
@@ -72,7 +73,7 @@ for (let i = 0; i < numberOfTimesToPrintHello; i++) {
 }
 ```
 
-We do it this way because we can just change the number to whatever we need in the future.
+"We do it this way because we can just change the number to whatever we need in the future!"
 
 **So often, we solution faster than we domain.**
 
@@ -80,7 +81,7 @@ Maybe we should have started with some questions first.
 
 - Are we going to have to do this again?
 - How often and what will trigger it?
-- What more information do we need about this features scope?
+- What more information do we need about this feature's scope?
 
 Maybe, just MAYBE. 3 times was exactly the number of times they wanted for this feature to happen on load. And that's all that will ever be required.
 
@@ -110,9 +111,11 @@ $ open index.html
 
 Spend the next 3 minutes familiarizing with the dataset, reviewing the html and javascript, viewing the page in the browser.
 
-## We do - Code smells - Maybe not (11/14)
+## We do - Code smells - Maybe not (6/17)
 
-Code smell always has a negative connotation. What we're looking for are **potential** ways to improve upon `client.js`:
+Code smell always has a negative connotation. What we're looking for are **potential** ways to improve upon our code
+
+In groups, identify some ways we might improve `client.js`:
 
 ```js
 function init() {
@@ -165,9 +168,9 @@ function init() {
 init();
 ```
 
-There's ultimately nothing to incorrect about this code. It's a bit procedural but it gets the job done well enough in just under 50 lines of code.. with comments!
+There's ultimately nothing too incorrect about this code. It's a bit procedural, but it gets the job done well enough in just under 50 lines of code.. with comments!
 
-If we know this "feature" will be exactly just rendering 4 messages, this code may be just fine.
+The biggest issue is there is almost no abstraction aside from using the luxon library and internal JS methods. If we know this "feature" will be exactly just rendering 4 messages, this code may be just fine.
 
 However, that's usually not the case in development. Scope creep and changing requirements are norms of the industry.
 
@@ -175,7 +178,7 @@ We want to write code with abstractions to help us reuse functionality.
 
 Let's take a look at a different solution with some abstractions added to it.
 
-## We do - 3 minute Code Review (3/11)
+## We do - 3 minute Code Review (3/20)
 
 Look at the implementation of rendering these messages.
 
@@ -198,7 +201,7 @@ The files that are creating this view is located in `index.html`:
 - `utils/parseTime.js`
 - `client.js`
 
-## We do - think-pair-share Groups (10/21)
+## We do - think-pair-share Groups (30/50)
 
 As groups, we'll review 4 primary functions in this code base: `buildMessage`, `buildMessages`, `parseTime`, and `fetchData`.
 
@@ -207,6 +210,17 @@ Spend the next 5 minutes talking about the function our group was assigned. Whil
 - input(s)
 - output(s)
 - side effect(s)
+
+### Remote Alternative
+Identify on your own the following things about each function for 6 minutes:
+
+- inputs
+- outputs
+- side effects
+- potential improvements
+
+We will then discuss as class remotely!
+
 
 ![1000 words](images/1000words.jpg)
 
@@ -289,20 +303,110 @@ function buildMessage(message) {
 }
 ```
 
-Inputs:
+- Inputs: `message` argument
+
+- Outputs: none, technically it's `undefined`
+
+- Side effects: everything in this function is a side effect
+
+This function probably does a bit too much. To be fair a lot of this function's body is just a bunch of template.
+
+It still has a reliance against the DOM (eg. `document.querySelector('.messages')`) in order to render the message. It feels like there's a better a pattern that can be used here.
 
 
-## SemanticJS
+### `parseTime`
 
-This isn't a piece of software, its a header for this part of the lesson. The idea is we want to have GREAT variable names. We all intrinsically know this as developers. Despite this, we struggle with naming things all the time.
-
-Spend 2 minutes discussing the merits or issues with your group's variable name.
-
+```js
+function parseTime(dateTimeString) {
+  const date = luxon.DateTime.fromISO(dateTimeString);
+  const amPM = date.hour > 12 ? 'pm' :'am';
+  const hour = date.hour > 12 ? date.hour % 12 : date.hour;
+  return `${date.day} ${date.monthShort} ${hour}:${date.minute} ${amPM}`
+}
 ```
-// TODO: needs code blocks as examples
-data
-callback
-isProd
+
+- Inputs: `dateTimeString`
+
+- Output: a human readable time string
+
+- Side effects: variable assignment, conditional operators?
+
+This function alternatively has less(no?) side effects when compared to `buildMessage`.
+
+#### Functional programming
+
+Wikipedia:
+
+>  treats computation as the evaluation of mathematical functions and avoids changing-state and mutable data.
+
+> In functional code, the output value of a function depends only on its arguments, so calling a function with the same value for an argument always produces the same result.
+
+Of all functions we've gone over, `parseTime` is the most functional. That's not to say the other functions aren't correct or valid. There's a wide spectrum of choices we have when writing code. Functional programming is one of several patterns we should be reaching for.
+
+### `fetchData`
+
+```js
+function fetchData() {
+  fetch('http://localhost:4000/messages/')
+    .then((res) => {
+      return res.json();
+    })
+    .then((res) => {
+      // destructures messages from response
+      buildMessages(res);
+    });
+}
+
+fetchData();
 ```
 
-if this then that org == 'admin' ?  '#ff2124': '#42221f'
+- Inputs: no inputs
+
+- Output: no output
+
+- Side Effects: yes...
+
+This function does fetch data, but it also builds messages?
+
+#### SemanticJS
+
+This isn't a piece of software, its a header for this part of the lesson. The idea is we want to have GREAT variable names. We all intrinsically know this as developers. Despite this, we struggle with naming things all the time. We could easily make the argument that the functions are semantically named.
+
+Let's spend some time looking at the semantics of our functions above. `parseTime` and `buildMessages` for the most part check out in terms of semantics. We could probably make arguments against even those.
+
+`buildMessage` and `fetchData` are bigger offenders when it comes to javascript semantics. Ironically `buildMessage` is named poorly because of it's other short coming of being on something reliant of the dom:
+
+```js
+const messagesEl = document.querySelector('.messages')
+messagesEl.appendChild(el)
+```
+
+It not only builds a message but it also appends it to the first element that matches the `.messages` selector...yikes
+
+`buildMessage` is probably still better here than `buildMessageThenAppendToMessagesEl`
+
+`fetchData` really should be called `fetchDataAndRenderApp`. Because that's what it does.
+
+Ironically, our `first-exercise`'s `init` function is more semantic and appropriate then the choice here.
+
+These are small and minor things but if we think about them innately while we develop, it goes a long way. In the case of the `buildMessage` function, focusing on the semantics helped unveil other underlying issues with the function itself.
+
+### Coupling and Cohesion
+
+When we break apart the semantics of the name `fetchData` and it's fallacies we're really touching on extremely important "measurements" in programming.
+
+These "measurements" are somewhat subjective but it gives us a mold to formulate our code against. Because wikipedia just does it right:
+
+Coupling:
+
+> coupling is the degree of interdependence between software modules; a measure of how closely connected two routines or modules are
+
+Cohesion:
+
+> cohesion refers to the degree to which the elements inside a module belong together
+
+These definitions pertain to software modules, but we as developers can translate these patterns to something as simple as the current codebase for this workshop.
+
+The goal as developers is to have low coupling and high cohesion. `fetchData` couples fetching with building messages. `parseTime`, alternatively, has high cohesion because it's only doing time parsing stuff and doesn't have any unnecessary side effects.
+
+## One more look
