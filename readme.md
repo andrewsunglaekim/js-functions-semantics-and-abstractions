@@ -530,6 +530,10 @@ Being a developer is a challenging and rewarding field. Every time we write func
 
 This a funny diagram that really speaks to the line of work we do. We weigh tons of factors writing code. 
 
+While developing this lesson plan, the intent was to build the first implementation as fast as possible. And so, `first-exercise` came to be. It was the first of all the implementations built for this lesson and served as the template for the other 2 implementations. 
+
+If someone said they needed this exact feature as fast as humanly possible, our perspective starts to shift into which of the 3 solutions we've covered was the best. 
+
 
 ### Closing
 
