@@ -1,6 +1,6 @@
 class MessageView {
-  constructor(messageObj) {
-    this.msg = messageObj;
+  constructor(msg) {
+    this.msg = msg;
   }
 
   render() {

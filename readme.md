@@ -111,9 +111,9 @@ $ open index.html
 
 Spend the next 3 minutes familiarizing with the dataset, reviewing the html and javascript, viewing the page in the browser.
 
-## We do - Code smells - Maybe not (6/17)
+## We do - Code smells/Code improvements - (6/17)
 
-Code smell always has a negative connotation. What we're looking for are **potential** ways to improve upon our code
+Code smell always has a negative connotation. We're not looking for bad code. What we're looking for are **potential** ways to improve upon our code.
 
 In groups, identify some ways we might improve `client.js`:
 
@@ -215,7 +215,7 @@ Spend the next 5 minutes talking about the function our group was assigned. Whil
 Identify on your own the following things about each function for 6 minutes:
 
 - inputs
-- outputs
+- output
 - side effects
 - potential improvements
 
@@ -224,7 +224,7 @@ We will then discuss as class remotely!
 
 ![1000 words](images/1000words.jpg)
 
-### Inputs, Outputs, Side Effects
+### Inputs, Output, Side Effects
 
 By definition, these things are very simple and intuitive:
 
@@ -239,7 +239,7 @@ For function `add`:
 
 - inputs: `num1`, `num2`
 
-- outputs: `num1 + num2`
+- output: `num1 + num2`
 
 - side effects: `num1` is logged.
 
@@ -305,7 +305,7 @@ function buildMessage(message) {
 
 - Inputs: `message` argument
 
-- Outputs: none, technically it's `undefined`
+- Output: none, technically it's `undefined`
 
 - Side effects: everything in this function is a side effect
 
@@ -385,7 +385,7 @@ It not only builds a message but it also appends it to the first element that ma
 
 `buildMessage` is probably still better here than `buildMessageThenAppendToMessagesEl`
 
-`fetchData` really should be called `fetchDataAndRenderApp`. Because that's what it does.
+`fetchData` really should be called `fetchDataAndRenderApp`. Because that's what it does. Additionally it lives in the `client.js` file. That feels weird.
 
 Ironically, our `first-exercise`'s `init` function is more semantic and appropriate then the choice here.
 
@@ -393,7 +393,7 @@ These are small and minor things but if we think about them innately while we de
 
 ### Coupling and Cohesion
 
-When we break apart the semantics of the name `fetchData` and it's fallacies we're really touching on extremely important "measurements" in programming.
+When we break apart the **semantics** of the name `fetchData` and it's fallacies we're really touching on extremely important "measurements" in programming.
 
 These "measurements" are somewhat subjective but it gives us a mold to formulate our code against. Because wikipedia just does it right:
 
@@ -409,4 +409,148 @@ These definitions pertain to software modules, but we as developers can translat
 
 The goal as developers is to have low coupling and high cohesion. `fetchData` couples fetching with building messages. `parseTime`, alternatively, has high cohesion because it's only doing time parsing stuff and doesn't have any unnecessary side effects.
 
-## One more look at the chat app
+## We do - One more look - 3 minute Code Review (3/20)
+
+Look at the implementation of rendering these messages.
+
+Checkout to the `third-exercise` branch. Review this code for 3 minutes.
+
+```
+$ git checkout third-exercise
+$ open index.html
+// alternatively, open the index.html in the browser in a different way
+```
+
+If we look at the new `client.js`:
+
+```js
+function init() {
+  fetchMessages().then((messages) => {
+    const messagesEl = document.querySelector('.messages')
+    const messagesView = new MessagesView(messages, messagesEl);
+    messagesView.renderMessages();
+  });
+}
+
+init();
+```
+
+This functions feels more semantic in terms of fetching data then rendering the application.
+
+We'll note here that the message fetching has been abstracted into `fetchMessages` defined in:
+
+```js
+function fetchMessages() {
+  return fetch('http://localhost:4000/messages/')
+    .then((res) => {
+      return res.json();
+    })
+    .then((res) => {
+      const { messages } = res
+      return messages;
+    })
+}
+```
+
+In a future lesson in this series, we'll go over how asynchronous code works in greater detail. But for the purposes of this lesson, `fetchMessages` has a clearer more singular purpose.
+
+The change from `fetchData` to `fetchMessages` is small, but can be subjectively significant. As the application grows we might need to fetch other data in which case we would be glad our method was already named `fetchMessages`. Alternatively, if the data never changes perhaps `fetchData` is correct after all.
+
+### The Views
+
+### `MessageView`
+
+Honestly there's not too much that's different. It's mostly just a class wrapper around the `buildMessage` function. There are a couple of significant distinctions.
+
+```js
+class MessageView {
+  constructor(msg) {
+    this.msg = msg;
+  }
+
+  render() {
+    const el = document.createElement('div');
+    el.className = `message ${this.msg.focused ? 'message--reversed' : ''}`
+    el.innerHTML = `
+      <div class="message__row">
+        <div class="message__content">
+          <div class="message__time">
+            ${parseTime(this.msg.timestamp)}
+          </div>
+          <div class="message__body">
+            ${this.msg.body}
+          </div>
+        </div>
+        <div class='message__user'>
+          <div class='message__username'>
+            ${this.msg.username}
+          </div>
+          <img
+            class="message__image"
+            src="${this.msg.image}">
+        </div>
+      </div>
+    `
+    return el;
+  }
+}
+```
+
+In this code, the `render` methods returns a DOM element as an output. In `buildMessage` the DOM element gets appended as a side effect.
+
+### `MessagesView`
+
+The other difference between the the old implementation and this one is that the appending happens at the messages  layer instead of the individual message layer.
+
+
+```js
+class MessagesView {
+  constructor(messages, el) {
+    this.messages = messages;
+    this.el = el;
+  }
+
+  renderMessages() {
+    this.messages.forEach((message) => {
+      const messageView = new MessageView(message)
+      this.el.appendChild(messageView.render());
+    })
+  }
+}
+```
+
+## The spectrum of engineering and some closing thoughts
+
+There isn't a world where any of these answers are always correct. We could probably be convinced that our first example was the best solution **if** this contrived application is all it will ever be. 
+
+The last solution feels kind of better then the first and second? The reality is that there are a ton of great solutions to this problem. The solution we end up picking depends on significantly more factors than were covered in this lesson.
+
+Being a developer is a challenging and rewarding field. Every time we write functions in javascript, we need to be able to just intrinsically know all the stuff we just covered. They're basic things sometimes but for whatever reason we give it cursory thought.
+
+
+![good fast cheap venn diagram](images/goodfastcheap.png)
+
+This a funny diagram that really speaks to the line of work we do. We weigh tons of factors writing code. 
+
+
+### Closing
+
+As a development culture, we always want to learn and use the latest and greatest technology.
+
+Syntax, languages, frameworks, librariers. They come and go. Patterns, however, stick around. Strong mastery over fundamentals help us recognize these fundamentals more innately as we develop. 
+
+
+Keep simple things we've discussed in this lesson at the fore front of our minds when building out functions until they become second nature:
+ 
+ - javascript semantics
+ - single responsibility 
+ - functional 
+ - coupling 
+ - cohesion
+
+Keep those things in mind as we organize things like:
+
+- variable names
+- inputs
+- outputs
+- side effects
