@@ -1,9 +1,12 @@
-function init() {
-  fetchMessages().then((messages) => {
-    const messagesEl = document.querySelector('.messages');
-    const messagesView = new MessagesView(messages, messagesEl);
-    messagesView.renderMessages();
-  });
+function fetchData() {
+  fetch('http://localhost:4000/messages/')
+    .then((res) => {
+      return res.json();
+    })
+    .then((res) => {
+      // destructures messages from response
+      buildMessages(res);
+    });
 }
 
-init();
+fetchData();

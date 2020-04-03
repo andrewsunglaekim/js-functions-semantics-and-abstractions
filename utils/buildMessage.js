@@ -1,6 +1,6 @@
 function buildMessage(message) {
   const el = document.createElement('div');
-  el.className = `message ${message.focused ? 'message--reversed' : ''}`
+  el.className = `message ${message.focused ? 'message--reversed' : ''}`;
   el.innerHTML = `
     <div class="message__row">
       <div class="message__content">
@@ -21,4 +21,7 @@ function buildMessage(message) {
       </div>
     </div>
   `
+
+  const messagesEl = document.querySelector('.messages');
+  messagesEl.appendChild(el)
 }
