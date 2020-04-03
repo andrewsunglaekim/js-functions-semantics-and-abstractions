@@ -29,8 +29,11 @@ The backend service used in this lesson is an express server, to install and run
 ```bash
 $ git clone git@github.com:andrewsunglaekim/js-functions-semantics-and-abstractions.git
 $ cd js-functions-semantics-and-abstractions
-$ npm install nodemon -g
 $ npm install
+$ node server.js
+
+// alternatively
+$ npm install nodemon -g
 $ nodemon server.js
 ```
 
@@ -49,25 +52,25 @@ Wikipedia:
 In this lesson, we'll introspect on this repository at various branches.
 
 ### A contrived thought experiment
-Imagine a world where logging hello is a feature. A company says I need this feature:
+Imagine a world where logging hello is a feature. A company says, "I need this feature":
 
 ```js
 console.log('hello');
 ```
 
-The company then says wow, what a great feature. We want it to happen twice we liked it so much. Got you fam:
+The company then says, "wow, what a great feature. We want it to happen more we liked it so much." Got you fam:
 
 ```js
 console.log('hello');
 console.log('hello');
 ```
 
-The company then says, "This isn't a feature for ants. I'm going to have to see that feature at least 3 times."
+The company then says, "What is this, a feature for ants?! It needs to be at least 3 times as big"
 
 We stop. We've seen this before. We think ahead. Boom:
 
 ```js
-const numberOfTimesToPrintHello = 3
+const numberOfTimesToPrintHello = 6
 for (let i = 0; i < numberOfTimesToPrintHello; i++) {
   console.log('hello');
 }
@@ -82,6 +85,7 @@ Maybe we should have started with some questions first.
 - Are we going to have to do this again?
 - How often and what will trigger it?
 - What more information do we need about this feature's scope?
+- What does it mean to be at least 3 times as big?
 
 Maybe, just MAYBE. 3 times was exactly the number of times they wanted for this feature to happen on load. And that's all that will ever be required.
 
@@ -115,7 +119,7 @@ Spend the next 3 minutes familiarizing with the dataset, reviewing the html and 
 
 Code smell always has a negative connotation. We're not looking for bad code. What we're looking for are **potential** ways to improve upon our code.
 
-In groups, identify some ways we might improve `client.js`:
+In groups, identify some ways we might improve `client.js` and some things we want to maintain in `client.js`:
 
 ```js
 function init() {
@@ -256,17 +260,11 @@ function buildMessages(data){
 }
 ```
 
-What are the inputs of the `buildMessages`?
+- inputs: `data`
 
-- `data`
+- output: `undefined`
 
-What is the output of `buildMessages`?
-
-- `undefined`
-
-What are the side effects?
-
-- a loop of `buildMessage` runs passing each message to the callback.
+- side effects: a loop of `buildMessage` runs passing each message to the callback.
 
 > It should be noted that client software is a world of side effects.
 
@@ -305,13 +303,13 @@ function buildMessage(message) {
 
 - Inputs: `message` argument
 
-- Output: none, technically it's `undefined`
+- Output: `undefined`
 
 - Side effects: everything in this function is a side effect
 
 This function probably does a bit too much. To be fair a lot of this function's body is just a bunch of template.
 
-It still has a reliance against the DOM (eg. `document.querySelector('.messages')`) in order to render the message. It feels like there's a better a pattern that can be used here.
+It has a reliance against the DOM (eg. `document.querySelector('.messages')`) in order to render the message. It feels like there's a better a pattern that can be used here.
 
 
 ### `parseTime`
@@ -409,7 +407,7 @@ These definitions pertain to software modules, but we as developers can translat
 
 The goal as developers is to have low coupling and high cohesion. `fetchData` couples fetching with building messages. `parseTime`, alternatively, has high cohesion because it's only doing time parsing stuff and doesn't have any unnecessary side effects.
 
-## We do - One more look - 3 minute Code Review (3/20)
+## We do - One more look - 3 minute Code Review (15/65)
 
 Look at the implementation of rendering these messages.
 
@@ -537,7 +535,7 @@ This a funny diagram that really speaks to the line of work we do. We weigh tons
 
 As a development culture, we always want to learn and use the latest and greatest technology.
 
-Syntax, languages, frameworks, librariers. They come and go. Patterns, however, stick around. Strong mastery over fundamentals help us recognize these fundamentals more innately as we develop. 
+Syntax, languages, frameworks, libraries. They come and go. Patterns, however, stick around. Strong mastery over fundamentals help us recognize these patterns more innately as we develop. 
 
 
 Keep simple things we've discussed in this lesson at the fore front of our minds when building out functions until they become second nature:
@@ -547,10 +545,13 @@ Keep simple things we've discussed in this lesson at the fore front of our minds
  - functional 
  - coupling 
  - cohesion
+ 
+ > These are not mutually exclusive!
 
 Keep those things in mind as we organize things like:
 
 - variable names
+- function names
 - inputs
 - outputs
 - side effects
