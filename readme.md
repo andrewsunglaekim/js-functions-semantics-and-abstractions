@@ -19,7 +19,7 @@ First and foremost, audience participation is welcome and encouraged.
 
 That said, it being a zoom call, look for pauses and defer to other speakers that begin earlier.
 
-Alternatively, another way to get heard or ensure a question is answered is to propose the question in the slack channel #js-functions-abstractions
+Alternatively, another way to get heard or ensure a question is answered is to propose the question in the zoom chat
 
 ### Admin - installation
 Install this repository if you'd like to run any of these scenarios locally.
@@ -52,20 +52,20 @@ Wikipedia:
 In this lesson, we'll introspect on this repository at various branches.
 
 ### A contrived thought experiment
-Imagine a world where logging hello is a feature. A company says, "I need this feature":
+Imagine a world where logging hello is a feature. A product team says, "I need this feature":
 
 ```js
 console.log('hello');
 ```
 
-The company then says, "wow, what a great feature. We want it to happen more we liked it so much." Got you fam:
+Prudct then says, "wow, what a great feature. We liked it so much, we want it to happen twice." Got you:
 
 ```js
 console.log('hello');
 console.log('hello');
 ```
 
-The company then says, "What is this, a feature for ants?! It needs to be at least 3 times as big"
+Product then says, "What is this, a feature for ants?! It needs to be at least 3 times as big"
 
 We stop. We've seen this before. We think ahead. Boom:
 
@@ -519,7 +519,7 @@ class MessagesView {
 
 ## The spectrum of engineering and some closing thoughts
 
-There isn't a world where any of these answers are always correct. We could probably be convinced that our first example was the best solution **if** this contrived application is all it will ever be. 
+There isn't a world where any of these answers are always correct. We could probably be convinced that our first example was the best solution **if** this contrived application is all it will ever be.
 
 The last solution feels kind of better then the first and second? The reality is that there are a ton of great solutions to this problem. The solution we end up picking depends on significantly more factors than were covered in this lesson.
 
@@ -528,28 +528,28 @@ Being a developer is a challenging and rewarding field. Every time we write func
 
 ![good fast cheap venn diagram](images/goodfastcheap.png)
 
-This a funny diagram that really speaks to the line of work we do. We weigh tons of factors writing code. 
+This a funny diagram that really speaks to the line of work we do. We weigh tons of factors writing code.
 
-While developing this lesson plan, the intent was to build the first implementation as fast as possible. And so, `first-exercise` came to be. It was the first of all the implementations built for this lesson and served as the template for the other 2 implementations. 
+While developing this lesson plan, the intent was to build the first implementation as fast as possible. And so, `first-exercise` came to be. It was the first of all the implementations built for this lesson and served as the template for the other 2 implementations.
 
-If someone said they needed this exact feature as fast as humanly possible, our perspective starts to shift into which of the 3 solutions we've covered was the best. 
+If someone said they needed this exact feature as fast as humanly possible, our perspective starts to shift into which of the 3 solutions we've covered was the best.
 
 
 ### Closing
 
 As a development culture, we always want to learn and use the latest and greatest technology.
 
-Syntax, languages, frameworks, libraries. They come and go. Patterns, however, stick around. Strong mastery over fundamentals help us recognize these patterns more innately as we develop. 
+Syntax, languages, frameworks, libraries. They come and go. Patterns, however, stick around. Strong mastery over fundamentals help us recognize these patterns more innately as we develop.
 
 
 Keep simple things we've discussed in this lesson at the fore front of our minds when building out functions until they become second nature:
- 
+
  - javascript semantics
- - single responsibility 
- - functional 
- - coupling 
+ - single responsibility
+ - functional
+ - coupling
  - cohesion
- 
+
  > These are not mutually exclusive!
 
 Keep those things in mind as we organize things like:
